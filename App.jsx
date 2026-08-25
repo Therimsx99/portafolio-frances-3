@@ -59,7 +59,7 @@ export default function App() {
               <GraduationCap size={16} className="text-[#0B0E14]" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
-              <div className="text-[13px] font-semibold">Viviana López Chaves</div>
+              <div className="text-[13px] font-semibold">Viviana López Chávez</div>
               <div className="mono text-[10px] text-[#8891A6] tracking-wide">FRANCÉS 3</div>
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function App() {
 
       <footer className="border-t border-[#1C2230] py-8 text-center">
         <p className="mono text-[11px] text-[#5A6376]">
-          Portafolio de Francés 3 — Viviana López Chaves
+          Portafolio de Francés 3 — Viviana López Chávez
         </p>
       </footer>
 

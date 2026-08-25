@@ -1,4 +1,4 @@
-# Portafolio de Francés 3 — Viviana López Chaves
+# Portafolio de Francés 3 — Viviana López Chávez
 
 Sitio para registrar y presentar como evidencia las tareas del curso de Francés 3.
 Construido con React + Vite + Tailwind CSS.
