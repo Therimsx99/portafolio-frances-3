@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import {
-  X, ExternalLink, Search, Flame, CalendarDays, FileText,
-  GraduationCap, Github, Pencil, RefreshCw, ArrowRight,
+  ExternalLink, Search, Flame, CalendarDays, FileText,
+  GraduationCap,
 } from "lucide-react";
 import { devoirs } from "./data.js";
 
@@ -23,7 +23,6 @@ function formatDateES(iso) {
 }
 
 export default function App() {
-  const [showHelp, setShowHelp] = useState(false);
   const [activeCategory, setActiveCategory] = useState("todas");
   const [search, setSearch] = useState("");
 
@@ -63,13 +62,6 @@ export default function App() {
               <div className="mono text-[10px] text-[#8891A6] tracking-wide">FRANCÉS 3</div>
             </div>
           </div>
-          <button
-            onClick={() => setShowHelp(true)}
-            className="flex items-center gap-1.5 text-xs font-medium px-3.5 py-2 rounded-md border border-[#2C3346] text-[#E7E9EE] hover:border-[#8B7CF6] hover:text-[#8B7CF6] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8B7CF6]"
-          >
-            <Pencil size={13} />
-            Cómo agregar una tarea
-          </button>
         </div>
       </header>
 
@@ -205,7 +197,21 @@ export default function App() {
                     {d.description && (
                       <p className="text-[13px] text-[#8891A6] mt-1 leading-relaxed">{d.description}</p>
                     )}
-                    {d.lien && (
+                    {d.lien && isImage(d.lien) && (
+                      <img
+                        src={d.lien}
+                        alt={d.titre}
+                        className="mt-3 rounded-md border border-[#1C2230] max-w-full sm:max-w-md"
+                      />
+                    )}
+                    {d.lien && isVideo(d.lien) && (
+                      <video
+                        src={d.lien}
+                        controls
+                        className="mt-3 rounded-md border border-[#1C2230] max-w-full sm:max-w-md"
+                      />
+                    )}
+                    {d.lien && !isImage(d.lien) && !isVideo(d.lien) && (
                       <a
                         href={d.lien}
                         target="_blank"
@@ -228,65 +234,6 @@ export default function App() {
           Portafolio de Francés 3 — Viviana López Chávez
         </p>
       </footer>
-
-      {/* Help modal: how to add a new entry via GitHub */}
-      {showHelp && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5">
-          <div className="bg-[#12161F] border border-[#1C2230] rounded-t-xl sm:rounded-xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-semibold flex items-center gap-2">
-                <Github size={16} />
-                Cómo agregar una tarea nueva
-              </h2>
-              <button
-                onClick={() => setShowHelp(false)}
-                aria-label="Cerrar"
-                className="text-[#8891A6] hover:text-[#E7E9EE] p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#8B7CF6] rounded"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <ol className="flex flex-col gap-4">
-              <HelpStep n={1} title="Abre tu repositorio en GitHub">
-                Entra a github.com, inicia sesión y abre el repositorio de este proyecto.
-              </HelpStep>
-              <HelpStep n={2} title="Abre el archivo src/data.js">
-                Navega a la carpeta <code className="text-[#8B7CF6]">src</code> y haz clic en{" "}
-                <code className="text-[#8B7CF6]">data.js</code>.
-              </HelpStep>
-              <HelpStep n={3} title="Haz clic en el ícono de lápiz">
-                Arriba a la derecha del archivo, para entrar en modo edición.
-              </HelpStep>
-              <HelpStep n={4} title="Copia un bloque y cámbialo">
-                Copia uno de los bloques <code className="text-[#8B7CF6]">{"{ ... }"}</code> que
-                ya existen, pégalo antes del cierre <code className="text-[#8B7CF6]">];</code> y
-                cambia el título, la categoría, la fecha y la descripción por los de tu nueva tarea.
-              </HelpStep>
-              <HelpStep n={5} title="Guarda los cambios">
-                Baja al final de la página y haz clic en{" "}
-                <span className="text-[#E7E9EE] font-medium">"Commit changes"</span>.
-              </HelpStep>
-              <HelpStep n={6} title="Espera un minuto" icon={<RefreshCw size={13} />}>
-                Vercel detecta el cambio automáticamente y actualiza tu página en línea sin que
-                tengas que hacer nada más.
-              </HelpStep>
-            </ol>
-
-            <div className="mt-6 pt-5 border-t border-[#1C2230] text-[12px] text-[#8891A6] leading-relaxed">
-              Categorías válidas: gramatica, conjugacion, vocabulario, expresion-escrita,
-              comprension-oral, lectura, cultura. Estado: entregado o borrador.
-            </div>
-
-            <button
-              onClick={() => setShowHelp(false)}
-              className="text-xs font-medium w-full mt-6 py-2.5 rounded-md bg-[#8B7CF6] text-[#0B0E14] hover:bg-[#a196f8] transition-colors flex items-center justify-center gap-1.5"
-            >
-              Entendido <ArrowRight size={13} />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -299,22 +246,6 @@ function Stat({ label, value, small }) {
       </div>
       <div className="text-[10px] text-[#5A6376] mt-1 leading-tight">{label}</div>
     </div>
-  );
-}
-
-function HelpStep({ n, title, children, icon }) {
-  return (
-    <li className="flex gap-3">
-      <div className="mono text-[11px] w-6 h-6 rounded-full bg-[#1C2230] text-[#8B7CF6] flex items-center justify-center shrink-0 mt-0.5">
-        {n}
-      </div>
-      <div>
-        <div className="text-[13px] font-medium text-[#E7E9EE] flex items-center gap-1.5">
-          {title} {icon}
-        </div>
-        <p className="text-[12px] text-[#8891A6] mt-0.5 leading-relaxed">{children}</p>
-      </div>
-    </li>
   );
 }
 
@@ -332,6 +263,14 @@ function Chip({ active, onClick, children, dot }) {
       {children}
     </button>
   );
+}
+
+function isImage(url) {
+  return /\.(png|jpe?g|gif|webp|svg)$/i.test(url);
+}
+
+function isVideo(url) {
+  return /\.(mp4|webm|ogg|mov)$/i.test(url);
 }
 
 function intensityColor(count) {
